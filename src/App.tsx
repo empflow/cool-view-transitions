@@ -1,5 +1,5 @@
 import { useState } from "react";
-import DropdownMenu from "./components/DropdownMenu/DropdownMenu";
+import DropdownMenuWrapper from "./components/DropdownMenu/DropdownMenuWrapper";
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -10,7 +10,7 @@ function App() {
         <button onClick={() => setIsMenuOpen((prev) => !prev)}>
           Toggle menu
         </button>
-        <DropdownMenu isOpen={isMenuOpen} />
+        <DropdownMenuWrapper isOpen={isMenuOpen} />
       </header>
     </main>
   );
