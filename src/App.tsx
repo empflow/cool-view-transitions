@@ -10,7 +10,7 @@ function App() {
         <button onClick={() => setIsMenuOpen((prev) => !prev)}>
           Toggle menu
         </button>
-        <DropdownMenuWrapper isOpen={isMenuOpen} />
+        <DropdownMenuWrapper isOpen={isMenuOpen} setIsOpen={setIsMenuOpen} />
       </header>
     </main>
   );

@@ -4,18 +4,25 @@ import Menu from "./Menu";
 export type TMenu = "main" | "settings" | "animals";
 export type THeight = "auto" | number;
 
-export type TMenuContextValue = null | {
+export type TMenuContextValue = {
   activeMenu: TMenu;
   setActiveMenu: Dispatch<SetStateAction<TMenu>>;
   setHeight: Dispatch<SetStateAction<THeight>>;
+  setIsMenuOpen: Dispatch<SetStateAction<boolean>>;
 };
-export const MenuContext = createContext<TMenuContextValue>(null);
+export type TMenuContext = null | TMenuContextValue;
+export const MenuContext = createContext<TMenuContext>(null);
+export const NoMenuContextErrMsg = "No React Context provided for Menu";
 
 interface DropdownMenuProps {
   isOpen: boolean;
+  setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-export default function DropdownMenuWrapper({ isOpen }: DropdownMenuProps) {
+export default function DropdownMenuWrapper({
+  isOpen,
+  setIsOpen,
+}: DropdownMenuProps) {
   const [activeMenu, setActiveMenu] = useState<TMenu>("main");
   const [height, setHeight] = useState<THeight>("auto");
 
@@ -28,7 +35,14 @@ export default function DropdownMenuWrapper({ isOpen }: DropdownMenuProps) {
       } bg-slate-100 box-content w-[300px] rounded border border-slate-400 p-2 absolute top-[65px] duration-fast`}
       style={{ height }}
     >
-      <MenuContext.Provider value={{ activeMenu, setActiveMenu, setHeight }}>
+      <MenuContext.Provider
+        value={{
+          activeMenu,
+          setActiveMenu,
+          setHeight,
+          setIsMenuOpen: setIsOpen,
+        }}
+      >
         <Menu name="main" nameToShow="Main">
           <button onClick={() => setActiveMenu("settings")}>
             go to settings
