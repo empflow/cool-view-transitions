@@ -1,5 +1,7 @@
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 import Menu from "./Menu";
+import MenuItem from "./MenuItem";
+import { ReactComponent as ArrowBackIcon } from "../../assets/icons/arrowBack.svg";
 
 export type TMenu = "main" | "settings" | "animals";
 export type THeight = "auto" | number;
@@ -18,6 +20,8 @@ interface DropdownMenuProps {
   isOpen: boolean;
   setIsOpen: Dispatch<SetStateAction<boolean>>;
 }
+
+export const transitionDuration = 100;
 
 export default function DropdownMenuWrapper({
   isOpen,
@@ -44,9 +48,11 @@ export default function DropdownMenuWrapper({
         }}
       >
         <Menu name="main" nameToShow="Main">
-          <button onClick={() => setActiveMenu("settings")}>
-            go to settings
-          </button>
+          <MenuItem
+            LeftIcon={ArrowBackIcon}
+            navigateTo="settings"
+            text="Go to settings"
+          />
         </Menu>
 
         <Menu
@@ -54,16 +60,16 @@ export default function DropdownMenuWrapper({
           nameToShow="Settings"
           backButton={{ navigateTo: "main", text: "Main" }}
         >
-          <button onClick={() => setActiveMenu("main")}>go to main</button>
-          <button onClick={() => setActiveMenu("animals")}>
-            go to animals
-          </button>
+          <MenuItem text="Go to main" navigateTo="main" />
+          <MenuItem text="Go to animals" navigateTo="animals" />
         </Menu>
 
-        <Menu name="animals" nameToShow="Animals">
-          <button onClick={() => setActiveMenu("settings")}>
-            go to settings
-          </button>
+        <Menu
+          name="animals"
+          nameToShow="Animals"
+          backButton={{ navigateTo: "settings", text: "Settings" }}
+        >
+          <MenuItem closeMenuOnClick text="This is an animals menu item" />
         </Menu>
       </MenuContext.Provider>
     </div>

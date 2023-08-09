@@ -1,6 +1,12 @@
 import { useContext, useEffect, useRef } from "react";
-import { MenuContext, TMenu } from "./DropdownMenuWrapper";
+import {
+  MenuContext,
+  NoMenuContextErrMsg,
+  TMenu,
+  TMenuContextValue,
+} from "./DropdownMenuWrapper";
 import { ReactComponent as ArrowBackIcon } from "../../assets/icons/arrowBack.svg";
+import throwIfNullOrUndefined from "../../utils/throwIfNullOrUndefined";
 
 interface MenuProps {
   name: string;
@@ -19,11 +25,10 @@ export default function Menu({
   backButton,
 }: MenuProps) {
   const menuContext = useContext(MenuContext);
-  if (!menuContext) {
-    throw new Error("No React Context provided for Menu");
-  }
+  throwIfNullOrUndefined(menuContext, { errMsg: NoMenuContextErrMsg });
 
-  const { activeMenu, setHeight, setActiveMenu } = menuContext;
+  const { activeMenu, setHeight, setActiveMenu } =
+    menuContext as TMenuContextValue;
   const menuRef = useRef<HTMLDivElement>(null);
   const isMenuVisible = activeMenu === name;
 
@@ -37,7 +42,7 @@ export default function Menu({
       {backButton && (
         <div>
           <button
-            className="flex fill-slate-600 text-gray-600 gap-0 items-center text-[0.95rem]"
+            className="flex fill-gray-500 text-gray-500 gap-0 items-center text-[0.95rem]"
             onClick={() => setActiveMenu(backButton.navigateTo)}
           >
             <ArrowBackIcon width={15} height={15} />
