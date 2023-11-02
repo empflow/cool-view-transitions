@@ -1,21 +1,26 @@
-import { useState } from "react";
-import useMeasure from "react-use-measure";
+import { ReactElement, createContext, useState } from "react";
 import { useSpring, animated } from "@react-spring/web";
+import { useDrag } from "@use-gesture/react";
 
-import styles from "./styles.module.css";
+type TBgColor = "red" | "blue";
 
 export default function App() {
-  const [open, toggle] = useState(false);
-  const [ref, { width }] = useMeasure();
-  const props = useSpring({ width: open ? width : 0 });
+  const [bgColor, setBgColor] = useState<TBgColor>("red");
+  const [styles, api] = useSpring(() => ({
+    from: { backgroundColor: "yellow" },
+    to: { backgroundColor: "orange" },
+  }));
+
+  // const divPosBind = useDrag(({ offset, movement, velocity: [xVel, yVel] }) => {
+  //   const thresholdVel = 3;
+  //   if (xVel > thresholdVel || yVel > thresholdVel) setFast(true);
+  //   else setFast(false);
+  // });
 
   return (
-    <div className={styles.container}>
-      <div ref={ref} className={styles.main} onClick={() => toggle(!open)}>
-        <animated.div className={styles.content} style={props}>
-          {props.width.to((x) => x.toFixed(0))}
-        </animated.div>
-      </div>
-    </div>
+    <main>
+      <animated.div style={styles} className="div"></animated.div>
+      <button onClick={() => api.start()}>change</button>
+    </main>
   );
 }
