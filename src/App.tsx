@@ -1,41 +1,32 @@
-import { useState, useEffect } from "react";
-import { useTransition, useSpringRef, easings } from "@react-spring/web";
+import { useSpring, animated, config } from "@react-spring/web";
+import { useDrag, useWheel } from "@use-gesture/react";
 import styles from "./styles.module.css";
-import { animatedPageData } from "./data";
-import AnimatedPage from "./AnimatedPage";
 
-export default function App() {
-  const [index, setIndex] = useState(0);
-  function onClick() {
-    setIndex((prev) => {
-      if (prev === animatedPageData.length - 1) return 0;
-      return prev + 1;
-    });
-  }
+function ComplexAnimation() {
+  const [spring, api] = useSpring(() => ({
+    x: 0,
+    y: 0,
+    rotate: 0,
+    config: config.slow,
+  }));
 
-  const api = useSpringRef();
-  const transitions = useTransition(index, {
-    keys: null,
-    ref: api,
-    from: { opacity: 1, transform: "translate3d(100%,0,0)" },
-    enter: { opacity: 1, transform: "translate3d(0%,0,0)" },
-    leave: { opacity: 1, transform: "translate3d(-50%,0,0)" },
-    config: {
-      duration: 500,
-      easing: easings.easeOutCubic,
-    },
+  const bindDivDrag = useDrag(({ movement: [x, y], down }) => {
+    if (down) api.start({ x, y });
+    else api.start({ x: 0, y: 0 });
   });
 
-  useEffect(() => {
-    api.start();
-  }, [index]);
+  useWheel(
+    ({ offset: [_, scrollY] }) => {
+      api.start({ rotate: scrollY });
+    },
+    { target: window }
+  );
 
   return (
-    <div className={styles.container} onClick={onClick}>
-      {transitions((style, i) => {
-        const pageDataProps = animatedPageData[i];
-        return <AnimatedPage {...pageDataProps} {...{ setIndex, style }} />;
-      })}
-    </div>
+    <main className={styles.container}>
+      <animated.div {...bindDivDrag()} style={spring} className={styles.card} />
+    </main>
   );
 }
+
+export default ComplexAnimation;
